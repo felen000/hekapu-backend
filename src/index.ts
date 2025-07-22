@@ -2,6 +2,7 @@ import express from 'express';
 import "dotenv/config"
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import sequelize from "./db.js"
 
 const PORT = process.env.PORT || 3000;
 const app = express()
@@ -10,8 +11,9 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors())
 
-const start = () => {
+const start = async () => {
     try {
+        await sequelize.authenticate()
         app.listen(PORT, () => {
             console.log('http://localhost:' + PORT);
         })
