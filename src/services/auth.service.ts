@@ -4,9 +4,6 @@ import {v4} from "uuid";
 import UserDto from "../dtos/user/user.dto.js";
 import tokenService from "./token.service.js";
 import userService from "./user.service.js";
-import userRepository from "../repository/user.repository.js";
-import tokenRepository from "../repository/token.repository.js";
-
 
 class AuthService {
     async register(email: string, password: string) {
@@ -21,7 +18,7 @@ class AuthService {
 
         // await mailService.sendActivationMail(email, link);
         const userDto = new UserDto(user);
-        const tokens = tokenService.generateTokens({...userDto});
+        const tokens = tokenService.generateTokens({userId: user.id});
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
         return {
@@ -42,7 +39,7 @@ class AuthService {
         }
 
         const userDto = new UserDto(user);
-        const tokens = tokenService.generateTokens({...userDto});
+        const tokens = tokenService.generateTokens({userId: user.id});
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
         return {
@@ -78,13 +75,13 @@ class AuthService {
             throw ApiError.UnauthorizedError('Неверный токен.')
         }
 
-        const user = await userService.getUserById(userData.id)
+        const user = await userService.getUserById(userData.userId)
         if (!user) {
             throw ApiError.UnauthorizedError('Неверный токен.')
         }
 
         const userDto = new UserDto(user);
-        const tokens = tokenService.generateTokens({...userDto});
+        const tokens = tokenService.generateTokens({userId: user.id});
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
         return {...tokens, user: userDto};
     }
