@@ -1,12 +1,15 @@
 import {User} from "../../db/models/user.model.js";
+import {Post} from "../../db/models/post.model.js";
 
 export default class UserDto {
-    email: string;
     id: number;
-    isActivated: boolean;
+    image: string;
+    name: string;
+    posts?: Post[]
     constructor(data: User) {
         this.id = data.id;
-        this.email = data.email;
-        this.isActivated = data.isActivated;
+        this.image = data.profilePicture;
+        this.name = data.name;
+        if (data.posts) this.posts = data.posts;
     }
 }
