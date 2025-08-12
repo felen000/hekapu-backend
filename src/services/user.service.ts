@@ -1,7 +1,6 @@
 import {User, UserCreationAttrs} from "../db/models/user.model.js";
-import {Role} from "../db/models/role.model.js";
 import userRepository from "../repository/user.repository.js";
-import {Post} from "../db/models/post.model.js";
+import {ApiError} from "../exceptions/api-error.js";
 
 class UserService {
     async createUser(userData: UserCreationAttrs): Promise<User> {
@@ -9,32 +8,64 @@ class UserService {
     }
 
     async activateUser(id: number): Promise<void> {
+        const user = await userRepository.findUserById(id);
+        if (!user) {
+            throw ApiError.NotFoundError('Указанный пользователь не существует.');
+        }
         await userRepository.updateUserById(id, {isActivated: true});
     }
 
-    async getAllUsers(): Promise<{ users:User[], userCount: number }> {
-        return await userRepository.getAllUsers()
+    async getAllUsers(): Promise<{ users: User[], userCount: number }> {
+        return await userRepository.getAllUsers();
     }
 
-    async getUserById(id: number): Promise<User | null> {
-        return await userRepository.findUserById(id);
+    async getUserById(id: number): Promise<User> {
+        const user = await userRepository.findUserById(id);
+        if (!user) {
+            throw ApiError.NotFoundError('Указанный пользователь не существует.');
+        }
+        return user;
     }
 
-    async getUserByEmail(email: string): Promise<User | null> {
-        return await userRepository.findUserByEmail(email);
+    async getUserByEmail(email: string): Promise<User> {
+        const user = await userRepository.findUserByEmail(email);
+        if (!user) {
+            throw ApiError.NotFoundError('Указанный пользователь не существует.');
+        }
+        return user;
     }
 
-    async getUserByActivationLink(activationLink: string): Promise<User | null> {
-        return await userRepository.findUserByActivationLink(activationLink);
+    async getUserByActivationLink(activationLink: string): Promise<User> {
+        const user = await userRepository.findUserByActivationLink(activationLink);
+        if (!user) {
+            throw ApiError.NotFoundError('Указанный пользователь не существует.');
+        }
+        return user;
     }
 
-    async updateUserById(id: number, userData: Partial<User>): Promise<User|null> {
-       return await userRepository.updateUserById(id, userData);
+    async updateUserById(id: number, userData: Partial<User>): Promise<User> {
+        const user = await userRepository.findUserById(id);
+        if (!user) {
+            throw ApiError.NotFoundError('Указанный пользователь не существует.');
+        }
+        return await userRepository.updateUserById(id, userData);
     }
 
     async deleteUserById(id: number): Promise<boolean> {
+        const user = await userRepository.findUserById(id);
+        if (!user) {
+            throw ApiError.NotFoundError('Указанный пользователь не существует.');
+        }
         const deletedRowsCount = await userRepository.deleteUserById(id);
-        return deletedRowsCount > 0
+        return deletedRowsCount > 0;
+    }
+
+    async getUserProfile(userId: number): Promise<User> {
+        const user = await userRepository.getUserProfile(userId);
+        if (!user) {
+            throw ApiError.NotFoundError('Указанный пользователь не существует.');
+        }
+        return user;
     }
 }
 
