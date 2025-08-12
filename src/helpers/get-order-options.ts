@@ -1,4 +1,7 @@
 export default function getOrderOptions(optionsString: string) {
+    if (!optionsString) {
+        return []
+    }
     const existingOptions = ['createdAt', 'updatedAt', 'rating'];
     const result = [];
     for (let option of new Set(optionsString.split(','))) {

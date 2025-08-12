@@ -10,6 +10,7 @@ import postRouter from "./router/post.router.js";
 import {Post} from "./db/models/post.model.js";
 import {Role} from "./db/models/role.model.js";
 import {PUBLIC_DIRECTORY} from "./constants/index.js";
+import userRouter from "./router/user.router.js";
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -23,6 +24,7 @@ app.use('/public',express.static(PUBLIC_DIRECTORY));
 
 app.use('/auth', authRouter);
 app.use('/posts', postRouter);
+app.use('/users', userRouter)
 app.use(errorMiddleware);
 
 (async () => {
@@ -31,8 +33,8 @@ app.use(errorMiddleware);
         // await Role.create({name: 'USER'});
         // await Post.destroy({truncate: true, cascade: true});
         // for (let i = 0; i < 100; i++) {
-            // const post = await Post.create({title: 'Title'+i, userId:1, content:'fijiiiiiiiie', image: null})
-            // post.update({rating: Math.floor(Math.random() * 100)});
+        //     const post = await Post.create({title: 'Title'+i, userId:1, content:'fijiiiiiiiie', image: null})
+        //     post.update({rating: Math.floor(Math.random() * 100)});
         // }
         app.listen(PORT, () => {
             console.log('http://localhost:' + PORT);

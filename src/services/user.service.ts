@@ -1,6 +1,7 @@
 import {User, UserCreationAttrs} from "../db/models/user.model.js";
 import userRepository from "../repository/user.repository.js";
 import {ApiError} from "../exceptions/api-error.js";
+import UserDto from "../dtos/user/user.dto.js";
 
 class UserService {
     async createUser(userData: UserCreationAttrs): Promise<User> {
@@ -43,12 +44,13 @@ class UserService {
         return user;
     }
 
-    async updateUserById(id: number, userData: Partial<User>): Promise<User> {
+    async updateUserById(id: number, userData: Partial<User>): Promise<UserDto> {
         const user = await userRepository.findUserById(id);
         if (!user) {
             throw ApiError.NotFoundError('Указанный пользователь не существует.');
         }
-        return await userRepository.updateUserById(id, userData);
+        const updatedUser = await userRepository.updateUserById(id, userData);
+        return new UserDto(updatedUser)
     }
 
     async deleteUserById(id: number): Promise<boolean> {
@@ -60,12 +62,12 @@ class UserService {
         return deletedRowsCount > 0;
     }
 
-    async getUserProfile(userId: number): Promise<User> {
+    async getUserProfile(userId: number): Promise<UserDto> {
         const user = await userRepository.getUserProfile(userId);
         if (!user) {
             throw ApiError.NotFoundError('Указанный пользователь не существует.');
         }
-        return user;
+        return new UserDto(user);
     }
 }
 
