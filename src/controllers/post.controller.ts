@@ -12,14 +12,10 @@ import {
 } from "../types/posts/posts-request.types.js";
 import {CreatedPost, DeletePostResult, UpdatedPost,} from "../types/posts/posts-response.types.js";
 import {Post} from "../db/models/post.model.js";
-import {fileURLToPath} from "url";
-import path from "path";
 import getOffset from "../helpers/get-offset.js";
 import getOrderOptions from "../helpers/get-order-options.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const publicPath = path.join(__dirname, '../../', '/public');
+import path from "path";
+import {POST_PICTURE_DIRECTORY} from "../constants/index.js";
 
 class PostController {
     async createPost(
@@ -36,8 +32,8 @@ class PostController {
             const userId = req.user.id;
             let imagePath = '';
             if (image) {
-                imagePath = '/public/' + image.name;
-                await image.mv(publicPath + '/' + image.name);
+                imagePath = '/public/posts/' + image.name;
+                await image.mv(path.join(POST_PICTURE_DIRECTORY, image.name));
             }
 
             const post = await postService.createPost({
@@ -67,13 +63,13 @@ class PostController {
             const image = req.files?.image as UploadedFile;
             let imagePath = '';
             if (image) {
-                imagePath = '/public/' + image.name;
-                await image.mv(imagePath);
+                imagePath = '/public/posts/' + image.name;
+                await image.mv(path.join(POST_PICTURE_DIRECTORY, image.name));
             }
             const post = await postService.updatePostById(postId, userId, {
                 title,
                 content,
-                image: imagePath ? process.env.API_URL! + '/' + imagePath : imagePath
+                image: imagePath ? process.env.API_URL! + imagePath : imagePath
             });
             return res.status(200).json(post);
         } catch (e) {

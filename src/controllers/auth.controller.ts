@@ -8,8 +8,7 @@ import {
     RefreshRequest, RegisterBody
 } from "../types/auth/auth-request.types.js";
 import {AuthResult} from "../types/auth/auth-response.types.js";
-
-const refreshCookieOptions = {maxAge: 15 * 24 * 60 * 60 * 1000, httpOnly: true};
+import {REFRESH_COOKIE_OPTIONS} from "../constants/index.js";
 
 class AuthController {
     async register(
@@ -24,7 +23,7 @@ class AuthController {
             }
             const {email, password} = req.body;
             const authData = await authService.register(email, password);
-            res.cookie('refreshToken', authData.refreshToken, refreshCookieOptions);
+            res.cookie('refreshToken', authData.refreshToken, REFRESH_COOKIE_OPTIONS);
             return res.status(201).json({accessToken: authData.accessToken, user: authData.user});
         } catch (e) {
             next(e);
@@ -43,7 +42,7 @@ class AuthController {
             }
             const {email, password} = req.body;
             const authData = await authService.login(email, password);
-            res.cookie('refreshToken', authData.refreshToken, refreshCookieOptions);
+            res.cookie('refreshToken', authData.refreshToken, REFRESH_COOKIE_OPTIONS);
             return res.json({accessToken: authData.accessToken, user: authData.user});
         } catch (e) {
             next(e);
@@ -79,7 +78,7 @@ class AuthController {
         try {
             const {refreshToken} = req.cookies;
             const authData = await authService.refresh(refreshToken);
-            res.cookie('refreshToken', authData.refreshToken, refreshCookieOptions);
+            res.cookie('refreshToken', authData.refreshToken, REFRESH_COOKIE_OPTIONS);
             return res.json({accessToken: authData.accessToken, user: authData.user});
         } catch (e) {
             next(e);
