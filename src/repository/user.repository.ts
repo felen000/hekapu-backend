@@ -46,7 +46,7 @@ class UserRepository {
     }
 
     async getAllUsers(): Promise<{users: User[], userCount: number}> {
-        const findResult =  await User.findAndCountAll();
+        const findResult =  await User.findAndCountAll({attributes: ['id', 'name', 'profilePicture']});
         return {userCount: findResult.count, users: findResult.rows};
     }
 }
