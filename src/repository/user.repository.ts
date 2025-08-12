@@ -24,6 +24,10 @@ class UserRepository {
         return await User.findOne({where: {id}});
     }
 
+    async getUserProfile(id: number): Promise<User | null> {
+        return await User.findOne({where: {id}, include: [{model: Post, limit: 10, order: [['createdAt', 'DESC']]} ]});
+    }
+
     async findUserByEmail(email: string): Promise<User | null> {
         return await User.findOne({where: {email}});
     }
