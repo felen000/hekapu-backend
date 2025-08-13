@@ -1,7 +1,5 @@
 import {Post, PostCreateAttrs, PostUpdateAttrs} from "../db/models/post.model.js";
-import userService from "./user.service.js";
 import {ApiError} from "../exceptions/api-error.js";
-import userRepository from "../repository/user.repository.js";
 import postRepository from "../repository/post.repository.js";
 import {PostsReceivingOptions} from "../types/posts/posts-receiving-options.types.js";
 
