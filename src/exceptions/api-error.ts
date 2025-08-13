@@ -1,4 +1,4 @@
-import {AlternativeValidationError, FieldValidationError, ValidationError} from "express-validator";
+import {AlternativeValidationError, FieldValidationError} from "express-validator";
 
 export class ApiError extends Error {
     code: string;
@@ -23,16 +23,6 @@ export class ApiError extends Error {
     static NotFoundError(message: string = "Запрашиваемый ресурс не найден.") {
         return new ApiError("NOT_FOUND", 404, message);
     }
-
-    // static ValidationError(errors: AlternativeValidationError[]) {
-    //     console.log(errors);
-    //     const {nestedErrors} = errors[0];
-    //     const details: Record<string, string> = {};
-    //     nestedErrors.forEach(err => {
-    //         details[err.path] = err.msg;
-    //     });
-    //     return new ApiError("VALIDATION_ERROR", 422, "Некоторые поля содержат некорректные данные", details);
-    // }
 
     static ValidationError(errors: AlternativeValidationError[] | FieldValidationError[]) {
         console.log(errors);
