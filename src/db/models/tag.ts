@@ -14,5 +14,5 @@ export class Tag extends Model<Tag, TagCreationAttrs> {
     name!: string;
 
     @BelongsToMany(()=> Post, ()=> PostTag)
-    posts?: PostTag[];
+    posts?: Post[];
 }
