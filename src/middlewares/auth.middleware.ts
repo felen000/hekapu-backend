@@ -15,7 +15,7 @@ export default async function authMiddleware(req: Request, res: Response, next: 
         }
 
         const userData = tokenService.validateAccessToken(accessToken);
-        if (!userData) {
+        if (!userData?.userId) {
             return next(ApiError.UnauthorizedError('Токен недействителен'));
         }
 
