@@ -1,9 +1,8 @@
 import {NextFunction, Response, Request} from "express";
 import {ApiError} from "../exceptions/api-error.js";
 import tokenService from "../services/token.service.js";
-import userService from "../services/user.service.js";
 
-export default async function (req: Request, res: Response, next: NextFunction) {
+export default async function authMiddleware (req: Request, res: Response, next: NextFunction) {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
         return next(ApiError.UnauthorizedError());
@@ -19,12 +18,7 @@ export default async function (req: Request, res: Response, next: NextFunction) 
         return next(ApiError.UnauthorizedError());
     }
 
-    const user = await userService.getUserById(userData.userId);
-    if (!user) {
-        return next(ApiError.UnauthorizedError());
-    }
-
-    req.user = {id: user.id};
+    req.user = {id: userData.userId};
     next();
 
 }
