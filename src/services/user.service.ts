@@ -9,10 +9,6 @@ class UserService {
     }
 
     async activateUser(id: number): Promise<void> {
-        const user = await userRepository.findUserById(id);
-        if (!user) {
-            throw ApiError.NotFoundError('Указанный пользователь не существует.');
-        }
         await userRepository.updateUserById(id, {isActivated: true});
     }
 
@@ -20,28 +16,17 @@ class UserService {
         return await userRepository.getAllUsers();
     }
 
-    async getUserById(id: number): Promise<User> {
-        const user = await userRepository.findUserById(id);
-        if (!user) {
-            throw ApiError.NotFoundError('Указанный пользователь не существует.');
-        }
-        return user;
+    async getUserById(id: number): Promise<User | null> {
+        return await userRepository.findUserById(id);
     }
 
-    async getUserByEmail(email: string): Promise<User> {
-        const user = await userRepository.findUserByEmail(email);
-        if (!user) {
-            throw ApiError.NotFoundError('Указанный пользователь не существует.');
-        }
-        return user;
+    async getUserByEmail(email: string): Promise<User | null> {
+        return await userRepository.findUserByEmail(email);
+
     }
 
-    async getUserByActivationLink(activationLink: string): Promise<User> {
-        const user = await userRepository.findUserByActivationLink(activationLink);
-        if (!user) {
-            throw ApiError.NotFoundError('Указанный пользователь не существует.');
-        }
-        return user;
+    async getUserByActivationLink(activationLink: string): Promise<User | null> {
+        return await userRepository.findUserByActivationLink(activationLink);
     }
 
     async updateUserById(id: number, userData: Partial<User>): Promise<UserDto> {
@@ -50,7 +35,7 @@ class UserService {
             throw ApiError.NotFoundError('Указанный пользователь не существует.');
         }
         const updatedUser = await userRepository.updateUserById(id, userData);
-        return new UserDto(updatedUser)
+        return new UserDto(updatedUser);
     }
 
     async deleteUserById(id: number): Promise<boolean> {
