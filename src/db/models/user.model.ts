@@ -53,7 +53,7 @@ export class User extends Model<User, UserCreationAttrs> {
     @BelongsToMany(() => Role, () => UserRole)
     roles?: Role[];
 
-    @HasMany(() => Post)
+    @HasMany(() => Post, {onDelete: 'CASCADE'})
     posts?: Post[];
 
     @HasMany(() => Rating)
