@@ -24,7 +24,10 @@ class PostRepository {
 
     async findPosts(options: PostsReceivingOptions): Promise<{ posts: Post[], postCount: number }> {
         const findResult = await Post.findAndCountAll({
-            ...options,
+            limit: options.limit,
+            offset: options.offset,
+            order: options.order,
+            where: {userId: options.userId},
             distinct: true,
             include: [
                 {
