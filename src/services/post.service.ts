@@ -2,17 +2,27 @@ import {Post, PostCreateAttrs, PostUpdateAttrs} from "../db/models/post.model.js
 import {ApiError} from "../exceptions/api-error.js";
 import postRepository from "../repository/post.repository.js";
 import {PostsReceivingOptions} from "../types/posts/posts-receiving-options.types.js";
+import tagService from "./tag.service.js";
+import {sequelize} from "../db/index.js";
+import {Transaction} from "sequelize";
 
 class PostService {
-    async createPost(postData: PostCreateAttrs): Promise<Post> {
+    async createPost(postData: PostCreateAttrs, tagNames: string[]): Promise<Post> {
         if (!postData.image && !postData.content) {
             throw ApiError.BadRequestError('Пост не может состоять из одного заголовка.');
         }
-        const post = await postRepository.createPost(postData);
-        return post;
+        return await sequelize.transaction(async (t: Transaction) => {
+            const post = await postRepository.createPost(postData, t);
+            if (tagNames.length > 0) {
+                const tags = await tagService.getOrCreateTags(tagNames, t);
+                await post.$add('tags', tags, {transaction: t});
+            }
+            return post;
+        });
+
     }
 
-    async updatePostById(postId: number, userId: number, postData: PostUpdateAttrs): Promise<Post> {
+    async updatePostById(postId: number, userId: number, postData: PostUpdateAttrs, tagNames: string[]): Promise<Post> {
         const post = await postRepository.findPostById(postId);
 
         if (!post) {
@@ -24,12 +34,18 @@ class PostService {
         }
 
         const valuesToUpdate: PostUpdateAttrs = {};
-        if(postData.title) valuesToUpdate.title = postData.title;
-        if(postData.content) valuesToUpdate.content = postData.content;
-        if(postData.image) valuesToUpdate.image = postData.image;
+        if (postData.title) valuesToUpdate.title = postData.title;
+        if (postData.content) valuesToUpdate.content = postData.content;
+        if (postData.image) valuesToUpdate.image = postData.image;
 
-        return await postRepository.updatePostById(postId, valuesToUpdate);
-
+        return await sequelize.transaction(async (t: Transaction) => {
+            const post = await postRepository.updatePostById(postId, valuesToUpdate, t);
+            if (tagNames.length > 0) {
+                const tags = await tagService.getOrCreateTags(tagNames, t);
+                await post.$set('tags', tags, {transaction: t});
+            }
+            return post;
+        });
     }
 
     async deletePostById(postId: number, userId: number): Promise<boolean> {
@@ -55,7 +71,7 @@ class PostService {
         return post;
     }
 
-    async getAllPosts(options: PostsReceivingOptions): Promise<{ posts:Post[], postCount: number }> {
+    async getAllPosts(options: PostsReceivingOptions): Promise<{ posts: Post[], postCount: number }> {
         return await postRepository.findPosts(options);
     }
 }

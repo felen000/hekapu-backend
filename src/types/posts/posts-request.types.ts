@@ -1,21 +1,28 @@
-import { ParamsDictionary } from 'express-serve-static-core';
-import {PostCreateAttrs} from "../../db/models/post.model.js";
+import {ParamsDictionary} from 'express-serve-static-core';
 
-export type CreatePostBody = Omit<PostCreateAttrs, 'image'|'userId'>
+export interface CreatePostBody {
+    title: string;
+    content: string;
+    tags: string;
+}
 
-export type UpdatePostBody = Omit<PostCreateAttrs, 'image'|'userId'>
+export interface UpdatePostBody {
+    title: string;
+    content: string;
+    tags: string;
+}
 
 export interface FindPostsQueryOptions {
     page: number;
     limit: number;
     sort_by: string;
-    tags: string
+    tags: string;
 }
 
-export interface UpdatePostParams extends ParamsDictionary{
-    postId: string
+export interface UpdatePostParams extends ParamsDictionary {
+    postId: string;
 }
 
-export interface DeletePostParams extends ParamsDictionary{
-    postId: string
+export interface DeletePostParams extends ParamsDictionary {
+    postId: string;
 }

@@ -27,7 +27,7 @@ class PostController {
             if (!result.isEmpty()) {
                 return next(ApiError.ValidationError(result.array() as AlternativeValidationError[]));
             }
-            const {title, content} = req.body;
+            const {title, content, tags} = req.body;
             const image = req.files?.image as UploadedFile;
             const userId = req.user.id;
             let imagePath = '';
@@ -41,7 +41,7 @@ class PostController {
                 content,
                 userId,
                 image: imagePath ? process.env.API_URL! + imagePath : imagePath
-            });
+            }, tags.length > 0 ? tags.split(',') : []);
             return res.status(201).json(post);
         } catch (e) {
             next(e);
@@ -59,7 +59,7 @@ class PostController {
             }
             const postId = +req.params.postId;
             const userId = req.user.id;
-            const {title, content} = req.body;
+            const {title, content, tags} = req.body;
             const image = req.files?.image as UploadedFile;
             let imagePath = '';
             if (image) {
@@ -70,7 +70,7 @@ class PostController {
                 title,
                 content,
                 image: imagePath ? process.env.API_URL! + imagePath : imagePath
-            });
+            }, tags.length > 0 ? tags.split(',') : []);
             return res.status(200).json(post);
         } catch (e) {
             next(e);
@@ -95,8 +95,8 @@ class PostController {
         try {
             const page = +req.query.page || 1;
             const limit = +req.query.limit || 10;
-            const orderOptions = getOrderOptions(req.query.sort_by)
-            const offset = getOffset(page,limit)
+            const orderOptions = getOrderOptions(req.query.sort_by);
+            const offset = getOffset(page, limit);
             const posts = await postService.getAllPosts({offset, limit, order: orderOptions});
             return res.status(200).json(posts);
         } catch (e) {
