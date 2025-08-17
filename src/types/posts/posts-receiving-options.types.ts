@@ -5,4 +5,5 @@ export interface PostsReceivingOptions {
     offset?: number;
     order?: Order;
     userId?: number
+    tags?: string[]
 }

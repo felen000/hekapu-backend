@@ -17,7 +17,7 @@ import {Comment} from "./comment.model.js";
 
 export interface PostCreateAttrs {
     title: string,
-    image: string|null,
+    image: string | null,
     content: string,
     userId: number
 }
@@ -51,8 +51,17 @@ export class Post extends Model<Post, PostCreateAttrs> {
     @BelongsTo(() => User)
     user!: User;
 
-    @BelongsToMany(() => Tag, () => PostTag)
+    @BelongsToMany(() => Tag, {
+        through: () => PostTag,
+        as: 'tags'
+    })
     tags?: Tag[];
+
+    @BelongsToMany(() => Tag, {
+        through: () => PostTag,
+        as: 'filterTags'
+    })
+    filterTags?: Tag[];
 
     @HasMany(() => Rating)
     ratings?: Rating[];

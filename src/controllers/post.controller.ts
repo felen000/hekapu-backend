@@ -97,7 +97,10 @@ class PostController {
             const limit = +req.query.limit || 10;
             const orderOptions = getOrderOptions(req.query.sort_by);
             const offset = getOffset(page, limit);
-            const posts = await postService.getAllPosts({offset, limit, order: orderOptions});
+            const tagsQuery = req.query.tags;
+            const tags = tagsQuery?.split(',') ?? [];
+            console.log(tags)
+            const posts = await postService.getAllPosts({offset, limit, order: orderOptions, tags});
             return res.status(200).json(posts);
         } catch (e) {
             next(e);

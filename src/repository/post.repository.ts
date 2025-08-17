@@ -1,7 +1,6 @@
 import {Post, PostCreateAttrs, PostUpdateAttrs} from "../db/models/post.model.js";
 import {PostsReceivingOptions} from "../types/posts/posts-receiving-options.types.js";
 import {Transaction} from "sequelize";
-import {Tag} from "../db/models/tag.js";
 
 class PostRepository {
     async createPost(postData: PostCreateAttrs, transaction?: Transaction): Promise<Post> {
@@ -27,14 +26,23 @@ class PostRepository {
             limit: options.limit,
             offset: options.offset,
             order: options.order,
-            where: {userId: options.userId},
+            where: options.userId ? {userId: options.userId} : undefined,
             distinct: true,
             include: [
                 {
-                    model: Tag,
+                    association: 'tags',
                     attributes: ["name"],
-                    through: {attributes: []}
-                }
+                    through: {attributes: []},
+                },
+                ...(options.tags?.length
+                    ? [{
+                        association: 'filterTags',
+                        attributes: [],
+                        where: ({name: options.tags}),
+                        through: {attributes: []},
+                        required: true
+                    }]
+                    : [])
             ]
         });
         return {posts: findResult.rows, postCount: findResult.count};
