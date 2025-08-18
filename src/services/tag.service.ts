@@ -1,6 +1,7 @@
 import {Tag} from "../db/models/tag.js";
 import tagRepository from "../repository/tag.repository.js";
 import {Transaction} from "sequelize";
+import {ApiError} from "../exceptions/api-error.js";
 
 class TagService {
     async getAllTags(): Promise<Tag[]> {
@@ -30,6 +31,10 @@ class TagService {
     }
 
     async deleteTag(tagName: string): Promise<boolean> {
+        const tag = await Tag.findOne({where: {name: tagName}});
+        if(!tag) {
+            throw ApiError.NotFoundError('Указанный тег не существует.');
+        }
         const deletedRows = await tagRepository.deleteTag(tagName);
         return deletedRows > 0;
     }
