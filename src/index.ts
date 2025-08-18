@@ -12,6 +12,7 @@ import {Role} from "./db/models/role.model.js";
 import {PUBLIC_DIRECTORY} from "./constants/index.js";
 import userRouter from "./router/user.router.js";
 import tagRouter from "./router/tag.router.js";
+import commentRouter from "./router/comment.router.js";
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -27,6 +28,7 @@ app.use('/auth', authRouter);
 app.use('/posts', postRouter);
 app.use('/users', userRouter);
 app.use('/tags', tagRouter)
+app.use(commentRouter)
 app.use(errorMiddleware);
 
 (async () => {
