@@ -11,6 +11,7 @@ import {Post} from "./db/models/post.model.js";
 import {Role} from "./db/models/role.model.js";
 import {PUBLIC_DIRECTORY} from "./constants/index.js";
 import userRouter from "./router/user.router.js";
+import tagRouter from "./router/tag.router.js";
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -20,11 +21,12 @@ app.use(cookieParser());
 app.use(cors());
 app.use(fileUpload());
 
-app.use('/public',express.static(PUBLIC_DIRECTORY));
+app.use('/public', express.static(PUBLIC_DIRECTORY));
 
 app.use('/auth', authRouter);
 app.use('/posts', postRouter);
-app.use('/users', userRouter)
+app.use('/users', userRouter);
+app.use('/tags', tagRouter)
 app.use(errorMiddleware);
 
 (async () => {
