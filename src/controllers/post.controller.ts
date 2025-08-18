@@ -10,10 +10,8 @@ import {
     UpdatePostBody,
     UpdatePostParams
 } from "../types/posts/posts-request.types.js";
-import {CreatedPost, DeletePostResult, UpdatedPost,} from "../types/posts/posts-response.types.js";
+import {CreatedPost, DeletePostResult, GetPostsResponse, UpdatedPost,} from "../types/posts/posts-response.types.js";
 import {Post} from "../db/models/post.model.js";
-import getOffset from "../helpers/get-offset.js";
-import getOrderOptions from "../helpers/get-order-options.js";
 import path from "path";
 import {POST_PICTURE_DIRECTORY} from "../constants/index.js";
 
@@ -91,16 +89,13 @@ class PostController {
 
     }
 
-    async getAllPosts(req: Request<{}, {}, {}, FindPostsQueryOptions>, res: Response, next: NextFunction): Promise<Response<Post[]> | void> {
+    async getAllPosts(req: Request<{}, {}, {}, FindPostsQueryOptions>, res: Response, next: NextFunction): Promise<Response<GetPostsResponse> | void> {
         try {
             const page = +req.query.page || 1;
             const limit = +req.query.limit || 10;
-            const orderOptions = getOrderOptions(req.query.sort_by);
-            const offset = getOffset(page, limit);
+            const sortByQuery = req.query.sort_by
             const tagsQuery = req.query.tags;
-            const tags = tagsQuery?.split(',') ?? [];
-            console.log(tags)
-            const posts = await postService.getAllPosts({offset, limit, order: orderOptions, tags});
+            const posts = await postService.getAllPosts(page, limit, sortByQuery, tagsQuery);
             return res.status(200).json(posts);
         } catch (e) {
             next(e);

@@ -5,3 +5,8 @@ export type UpdatedPost = Post
 export interface DeletePostResult {
     isDeleted: boolean
 }
+
+export interface GetPostsResponse {
+    posts: Post[]
+    postCount: number
+}

@@ -1,10 +1,11 @@
 import {Post, PostCreateAttrs, PostUpdateAttrs} from "../db/models/post.model.js";
 import {ApiError} from "../exceptions/api-error.js";
 import postRepository from "../repository/post.repository.js";
-import {PostsReceivingOptions} from "../types/posts/posts-receiving-options.types.js";
 import tagService from "./tag.service.js";
 import {sequelize} from "../db/index.js";
 import {Transaction} from "sequelize";
+import getOrderOptions from "../helpers/get-order-options.js";
+import getOffset from "../helpers/get-offset.js";
 
 class PostService {
     async createPost(postData: PostCreateAttrs, tagNames: string[]): Promise<Post> {
@@ -71,8 +72,14 @@ class PostService {
         return post;
     }
 
-    async getAllPosts(options: PostsReceivingOptions): Promise<{ posts: Post[], postCount: number }> {
-        return await postRepository.findPosts(options);
+    async getAllPosts(page = 1, limit = 10, sortByQuery: string, tagsQuery: string): Promise<{
+        posts: Post[],
+        postCount: number
+    }> {
+        const orderOptions = getOrderOptions(sortByQuery);
+        const offset = getOffset(page, limit);
+        const tags = tagsQuery?.split(',') ?? [];
+        return await postRepository.findPosts({offset, limit, order: orderOptions, tags});
     }
 }
 
