@@ -7,8 +7,6 @@ import {
     UsersRequestParams
 } from "../types/users/users-request.type.js";
 import {Post} from "../db/models/post.model.js";
-import getOrderOptions from "../helpers/get-order-options.js";
-import getOffset from "../helpers/get-offset.js";
 import postService from "../services/post.service.js";
 import {UploadedFile} from "express-fileupload";
 import path from "path";
@@ -39,9 +37,8 @@ class UserController {
             const userId = +req.params.userId;
             const page = +req.query.page || 1;
             const limit = +req.query.limit || 10;
-            const orderOptions = getOrderOptions(req.query.sort_by);
-            const offset = getOffset(page, limit);
-            const posts = await postService.getAllPosts({userId, offset, limit, order: orderOptions});
+            const sortByQuery = req.query.sort_by;
+            const posts = await postService.getAllPosts(page, limit, sortByQuery, '', userId);
             return res.status(200).json(posts);
         } catch (e) {
             next(e);
