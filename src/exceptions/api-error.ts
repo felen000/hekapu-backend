@@ -24,6 +24,10 @@ export class ApiError extends Error {
         return new ApiError("NOT_FOUND", 404, message);
     }
 
+    static InternalServerError(message: string = "Внутренняя ошибка сервера.") {
+        return new ApiError("INTERNAL_SERVER_ERROR", 500, message);
+    }
+
     static ValidationError(errors: AlternativeValidationError[] | FieldValidationError[]) {
         console.log(errors);
         const details: Record<string, string> = {};
