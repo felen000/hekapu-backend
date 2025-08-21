@@ -72,14 +72,14 @@ class PostService {
         return post;
     }
 
-    async getAllPosts(page = 1, limit = 10, sortByQuery: string, tagsQuery: string): Promise<{
+    async getAllPosts(page = 1, limit = 10, sortByQuery: string, tagsQuery: string, userId: number | undefined = undefined): Promise<{
         posts: Post[],
         postCount: number
     }> {
         const orderOptions = getOrderOptions(sortByQuery);
         const offset = getOffset(page, limit);
-        const tags = tagsQuery?.split(',') ?? [];
-        return await postRepository.findPosts({offset, limit, order: orderOptions, tags});
+        const tags = tagsQuery?.length > 0 ? tagsQuery.split(',') : [];
+        return await postRepository.findPosts({offset, limit, order: orderOptions, tags, userId});
     }
 }
 
