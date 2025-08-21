@@ -5,8 +5,7 @@ import {sequelize} from "../db/index.js";
 
 class PostRepository {
     async createPost(postData: PostCreateAttrs, transaction?: Transaction): Promise<Post> {
-        const post = await Post.create(postData, {transaction});
-        return post;
+        return await Post.create(postData, {transaction});
     }
 
     async updatePostById(postId: number, postData: PostUpdateAttrs, transaction?: Transaction): Promise<Post> {
