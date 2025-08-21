@@ -14,7 +14,7 @@ class ImageService {
             }
             const fileName = v4() + '.jpg';
             const filePath = path.join(POST_PICTURE_DIRECTORY, fileName);
-            await sharp(image.data).jpeg().toFile(filePath);
+            await sharp(image.data).jpeg({quality: 70, progressive: true, chromaSubsampling: '4:4:4'}).toFile(filePath);
             return process.env.API_URL + '/public/posts/' + fileName;
         } catch (e) {
             console.log('Ошибка при обработке изображения:', e);
@@ -29,7 +29,7 @@ class ImageService {
             }
             const fileName = v4() + '.jpg';
             const filePath = path.join(PROFILE_PICTURE_DIRECTORY, fileName);
-            await sharp(image.data).jpeg().toFile(filePath);
+            await sharp(image.data).jpeg({quality: 70, progressive: true, chromaSubsampling: '4:4:4'}).toFile(filePath);
             return process.env.API_URL + '/public/users/' + fileName;
         } catch (e) {
             console.log('Ошибка при обработке изображения:', e);
