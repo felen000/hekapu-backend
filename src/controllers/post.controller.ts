@@ -12,8 +12,7 @@ import {
 } from "../types/posts/posts-request.types.js";
 import {CreatedPost, DeletePostResult, GetPostsResponse, UpdatedPost,} from "../types/posts/posts-response.types.js";
 import {Post} from "../db/models/post.model.js";
-import path from "path";
-import {POST_PICTURE_DIRECTORY} from "../constants/index.js";
+import ImageService from "../services/image.service.js";
 
 class PostController {
     async createPost(
@@ -30,15 +29,13 @@ class PostController {
             const userId = req.user.id;
             let imagePath = '';
             if (image) {
-                imagePath = '/public/posts/' + image.name;
-                await image.mv(path.join(POST_PICTURE_DIRECTORY, image.name));
+                imagePath = await ImageService.savePostImage(image);
             }
-
             const post = await postService.createPost({
                 title,
                 content,
                 userId,
-                image: imagePath ? process.env.API_URL! + imagePath : imagePath
+                image: imagePath
             }, tags.length > 0 ? tags.split(',') : []);
             return res.status(201).json(post);
         } catch (e) {
@@ -61,13 +58,12 @@ class PostController {
             const image = req.files?.image as UploadedFile;
             let imagePath = '';
             if (image) {
-                imagePath = '/public/posts/' + image.name;
-                await image.mv(path.join(POST_PICTURE_DIRECTORY, image.name));
+                imagePath = await ImageService.savePostImage(image);
             }
             const post = await postService.updatePostById(postId, userId, {
                 title,
                 content,
-                image: imagePath ? process.env.API_URL! + imagePath : imagePath
+                image: imagePath
             }, tags.length > 0 ? tags.split(',') : []);
             return res.status(200).json(post);
         } catch (e) {
@@ -86,15 +82,14 @@ class PostController {
         } catch (e) {
             next(e);
         }
-
     }
 
     async getAllPosts(req: Request<{}, {}, {}, FindPostsQueryOptions>, res: Response, next: NextFunction): Promise<Response<GetPostsResponse> | void> {
         try {
             const page = +req.query.page || 1;
             const limit = +req.query.limit || 10;
-            const sortByQuery = req.query.sort_by
-            const tagsQuery = req.query.tags;
+            const sortByQuery = req.query.sort_by || '';
+            const tagsQuery = req.query.tags || '';
             const posts = await postService.getAllPosts(page, limit, sortByQuery, tagsQuery);
             return res.status(200).json(posts);
         } catch (e) {
