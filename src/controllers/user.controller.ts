@@ -9,8 +9,7 @@ import {
 import {Post} from "../db/models/post.model.js";
 import postService from "../services/post.service.js";
 import {UploadedFile} from "express-fileupload";
-import path from "path";
-import {PROFILE_PICTURE_DIRECTORY} from "../constants/index.js";
+import imageService from "../services/image.service.js";
 
 class UserController {
     async getAllUsers(req: Request, res: Response, next: NextFunction): Promise<Response<User[]> | void> {
@@ -25,7 +24,7 @@ class UserController {
     async getUserProfile(req: Request<UsersRequestParams>, res: Response, next: NextFunction): Promise<Response<User> | void> {
         try {
             const userId = +req.params.userId;
-            const userProfile =  await userService.getUserProfile(userId)
+            const userProfile = await userService.getUserProfile(userId);
             return res.status(200).json(userProfile);
         } catch (e) {
             next(e);
@@ -52,12 +51,11 @@ class UserController {
             const profilePicture = req.files?.image as UploadedFile;
             let imagePath = '';
             if (profilePicture) {
-                imagePath = '/public/' + profilePicture.name;
-                await profilePicture.mv(path.join(PROFILE_PICTURE_DIRECTORY, profilePicture.name));
+                imagePath = await imageService.saveProfilePicture(profilePicture);
             }
             const user = await userService.updateUserById(userId, {
                 name,
-                profilePicture: imagePath ? process.env.API_URL! + imagePath : imagePath
+                profilePicture: imagePath
             });
             return res.status(200).json(user);
         } catch (e) {
@@ -65,7 +63,9 @@ class UserController {
         }
     }
 
-    async deleteUser(req: Request, res: Response, next: NextFunction): Promise<Response<{ isDeleted: boolean }> | void> {
+    async deleteUser(req: Request, res: Response, next: NextFunction): Promise<Response<{
+        isDeleted: boolean
+    }> | void> {
         try {
             const userId = req.user.id;
             const isDeleted = await userService.deleteUserById(userId);
