@@ -1,6 +1,7 @@
 import {Post, PostCreateAttrs, PostUpdateAttrs} from "../db/models/post.model.js";
 import {PostsReceivingOptions} from "../types/posts/posts-receiving-options.types.js";
 import {Transaction} from "sequelize";
+import {sequelize} from "../db/index.js";
 
 class PostRepository {
     async createPost(postData: PostCreateAttrs, transaction?: Transaction): Promise<Post> {
@@ -28,6 +29,18 @@ class PostRepository {
             order: options.order,
             where: options.userId ? {userId: options.userId} : undefined,
             distinct: true,
+            attributes: {
+                include: [
+                    [
+                        sequelize.literal(`(
+                              SELECT COUNT(*)
+                              FROM "Comments" AS c
+                              WHERE c."postId" = "Post"."id"
+                            )`),
+                        'commentCount'
+                    ]
+                ]
+            },
             include: [
                 {
                     association: 'tags',

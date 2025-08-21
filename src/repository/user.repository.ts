@@ -1,6 +1,7 @@
 import {User, UserCreationAttrs} from "../db/models/user.model.js";
 import {Role} from "../db/models/role.model.js";
 import {Post} from "../db/models/post.model.js";
+import {sequelize} from "../db/index.js";
 
 class UserRepository {
     async createUser(userData: UserCreationAttrs): Promise<User> {
@@ -25,7 +26,28 @@ class UserRepository {
     }
 
     async getUserProfile(id: number): Promise<User | null> {
-        return await User.findOne({where: {id}, include: [{model: Post, limit: 10, order: [['createdAt', 'DESC']]} ]});
+        return await User.findOne({
+            where: {id},
+            include: [
+                {
+                    model: Post,
+                    limit: 10,
+                    attributes: {
+                        include: [
+                            [
+                                sequelize.literal(`(
+                              SELECT COUNT(*)
+                              FROM "Comments" AS c
+                              WHERE c."postId" = "Post"."id"
+                            )`),
+                                'commentCount'
+                            ]
+                        ]
+                    },
+                    order: [['createdAt', 'DESC']]
+                }
+            ]
+        });
     }
 
     async findUserByEmail(email: string): Promise<User | null> {
@@ -45,8 +67,8 @@ class UserRepository {
         return await User.destroy({where: {id}});
     }
 
-    async getAllUsers(): Promise<{users: User[], userCount: number}> {
-        const findResult =  await User.findAndCountAll({attributes: ['id', 'name', 'profilePicture']});
+    async getAllUsers(): Promise<{ users: User[], userCount: number }> {
+        const findResult = await User.findAndCountAll({attributes: ['id', 'name', 'profilePicture']});
         return {userCount: findResult.count, users: findResult.rows};
     }
 }
