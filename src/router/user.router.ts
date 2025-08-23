@@ -7,7 +7,7 @@ const router = Router();
 router.get('/', userController.getAllUsers)
 router.get('/:userId/profile', userController.getUserProfile)
 router.get('/:userId/posts' , userController.getPostsByUser)
-router.put('/',authMiddleware, userController.updateUserProfile)
-router.delete('/', authMiddleware, userController.deleteUser)
+router.put('/',authMiddleware(), userController.updateUserProfile)
+router.delete('/', authMiddleware(), userController.deleteUser)
 
 export default router;

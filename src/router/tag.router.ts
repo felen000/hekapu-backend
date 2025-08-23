@@ -7,6 +7,6 @@ const router = Router();
 
 router.get('/', tagController.getTagsByQuery);
 router.post('/', tagController.createTag);
-router.delete('/:tagName', authMiddleware, roleMiddleware('ADMIN'), tagController.deleteTag);
+router.delete('/:tagName', authMiddleware(), roleMiddleware('ADMIN'), tagController.deleteTag);
 
 export default router;
