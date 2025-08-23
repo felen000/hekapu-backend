@@ -1,4 +1,4 @@
-import {ParamsDictionary} from 'express-serve-static-core';
+import {ParamsDictionary,Query} from 'express-serve-static-core';
 
 export interface CreatePostBody {
     title: string;
@@ -12,9 +12,9 @@ export interface UpdatePostBody {
     tags: string;
 }
 
-export interface FindPostsQueryOptions {
-    page: number;
-    limit: number;
+export interface FindPostsQueryOptions extends Query{
+    page: string;
+    limit: string;
     sort_by: string;
     tags: string;
 }
