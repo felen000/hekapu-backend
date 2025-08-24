@@ -6,7 +6,7 @@ import roleMiddleware from "../middlewares/role.middleware.js";
 const router = Router();
 
 router.get('/', tagController.getTagsByQuery);
-router.post('/', tagController.createTag);
+router.post('/', authMiddleware(), tagController.createTag);
 router.delete('/:tagName', authMiddleware(), roleMiddleware('ADMIN'), tagController.deleteTag);
 
 export default router;
