@@ -88,9 +88,10 @@ class PostController {
         try {
             const page = +req.query.page || 1;
             const limit = +req.query.limit || 10;
+            const currentUserId = req.user?.id ?? null;
             const sortByQuery = req.query.sort_by || '';
             const tagsQuery = req.query.tags || '';
-            const posts = await postService.getAllPosts(page, limit, sortByQuery, tagsQuery);
+            const posts = await postService.getAllPosts({page, limit, sortByQuery, tagsQuery, currentUserId});
             return res.status(200).json(posts);
         } catch (e) {
             next(e);

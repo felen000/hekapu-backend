@@ -72,14 +72,28 @@ class PostService {
         return post;
     }
 
-    async getAllPosts(page = 1, limit = 10, sortByQuery: string, tagsQuery: string, userId: number | undefined = undefined): Promise<{
+    async getAllPosts(options: {
+        page: number,
+        limit: number,
+        sortByQuery: string,
+        tagsQuery: string,
+        userId?: number,
+        currentUserId?: number
+    }): Promise<{
         posts: Post[],
         postCount: number
     }> {
-        const orderOptions = getOrderOptions(sortByQuery);
-        const offset = getOffset(page, limit);
-        const tags = tagsQuery?.length > 0 ? tagsQuery.split(',') : [];
-        return await postRepository.findPosts({offset, limit, order: orderOptions, tags, userId});
+        const orderOptions = getOrderOptions(options.sortByQuery);
+        const offset = getOffset(options.page, options.limit);
+        const tags = options.tagsQuery?.length > 0 ? options.tagsQuery.split(',') : [];
+        return await postRepository.findPosts({
+            offset,
+            limit: options.limit,
+            order: orderOptions,
+            tags,
+            userId: options.userId,
+            currentUserId: options.currentUserId
+        });
     }
 }
 

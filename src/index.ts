@@ -7,12 +7,11 @@ import {sequelize} from "./db/index.js";
 import authRouter from "./router/auth.router.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
 import postRouter from "./router/post.router.js";
-import {Post} from "./db/models/post.model.js";
-import {Role} from "./db/models/role.model.js";
 import {PUBLIC_DIRECTORY} from "./constants/index.js";
 import userRouter from "./router/user.router.js";
 import tagRouter from "./router/tag.router.js";
 import commentRouter from "./router/comment.router.js";
+import ratingRouter from "./router/rating.router.js";
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -27,8 +26,9 @@ app.use('/public', express.static(PUBLIC_DIRECTORY));
 app.use('/auth', authRouter);
 app.use('/posts', postRouter);
 app.use('/users', userRouter);
-app.use('/tags', tagRouter)
-app.use(commentRouter)
+app.use('/tags', tagRouter);
+app.use(commentRouter);
+app.use(ratingRouter);
 app.use(errorMiddleware);
 
 (async () => {
@@ -38,8 +38,8 @@ app.use(errorMiddleware);
         // await Post.destroy({truncate: true, cascade: true});
         // for (let i = 0; i < 100; i++) {
         //     const post = await Post.create({title: 'Title'+i, userId:1, content:'fijiiiiiiiie', image: null})
-        //     post.update({rating: Math.floor(Math.random() * 100)});
         // }
+        // await Rating.create({postId: 2, userId: 1, rate: -1})
         app.listen(PORT, () => {
             console.log('http://localhost:' + PORT);
         });
