@@ -37,7 +37,7 @@ class UserController {
             const page = +req.query.page || 1;
             const limit = +req.query.limit || 10;
             const sortByQuery = req.query.sort_by;
-            const posts = await postService.getAllPosts(page, limit, sortByQuery, '', userId);
+            const posts = await postService.getAllPosts({page, limit, sortByQuery, tagsQuery: '', userId});
             return res.status(200).json(posts);
         } catch (e) {
             next(e);
