@@ -1,7 +1,6 @@
 import {NextFunction, Response, Request} from "express";
 import {ApiError} from "../exceptions/api-error.js";
 import tokenService from "../services/token.service.js";
-import userService from "../services/user.service.js";
 
 export default function authMiddleware(options?: { required?: boolean }) {
     return async (req: Request, res: Response, next: NextFunction) => {
@@ -25,18 +24,11 @@ export default function authMiddleware(options?: { required?: boolean }) {
                 return next(ApiError.UnauthorizedError('Токен недействителен'));
             }
 
-            const user = await userService.getUserById(userData.userId);
-            if (!user) {
-                if (!required) return next();
-                return next(ApiError.UnauthorizedError('Токен недействителен'));
-            }
-
-            req.user = {id: user.id};
+            req.user = {id: userData.userId, isActivated: userData.isActivated};
             next();
         } catch (e) {
             if (!required) return next();
             next(ApiError.UnauthorizedError("Ошибка авторизации"));
         }
-
     };
 }

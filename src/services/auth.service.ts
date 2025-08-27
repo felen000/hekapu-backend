@@ -18,7 +18,7 @@ class AuthService {
 
         // await mailService.sendActivationMail(email, link);
         const userDto = new UserDto(user);
-        const tokens = tokenService.generateTokens({userId: user.id});
+        const tokens = tokenService.generateTokens({userId: user.id, isActivated: user.isActivated});
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
         return {
@@ -39,7 +39,7 @@ class AuthService {
         }
 
         const userDto = new UserDto(user);
-        const tokens = tokenService.generateTokens({userId: user.id});
+        const tokens = tokenService.generateTokens({userId: user.id, isActivated: user.isActivated});
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
         return {
@@ -81,7 +81,7 @@ class AuthService {
         }
 
         const userDto = new UserDto(user);
-        const tokens = tokenService.generateTokens({userId: user.id});
+        const tokens = tokenService.generateTokens({userId: user.id, isActivated: user.isActivated});
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
         return {...tokens, user: userDto};
     }

@@ -9,6 +9,7 @@ interface Tokens {
 
 interface TokenPayload {
     userId: number
+    isActivated: boolean
 }
 
 class TokenService {

@@ -4,7 +4,7 @@ declare global {
     namespace Express {
         interface Request {
             files: fileUpload.FileArray | { image: uploadedFile },
-            user: { id: number }
+            user: { id: number, isActivated: boolean },
         }
     }
 }
