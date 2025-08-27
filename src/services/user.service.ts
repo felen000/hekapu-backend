@@ -12,8 +12,9 @@ class UserService {
         await userRepository.updateUserById(id, {isActivated: true});
     }
 
-    async getAllUsers(): Promise<{ users: User[], userCount: number }> {
-        return await userRepository.getAllUsers();
+    async getAllUsers(): Promise<{ users: UserDto[], userCount: number }> {
+        const users = await userRepository.getAllUsers();
+        return {users: users.users.map(user => new UserDto(user)), userCount: users.userCount};
     }
 
     async getUserById(id: number): Promise<User | null> {
