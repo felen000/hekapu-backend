@@ -1,4 +1,3 @@
-import {User} from "../db/models/user.model.js";
 import {NextFunction, Request, Response} from "express";
 import userService from "../services/user.service.js";
 import {
@@ -6,13 +5,22 @@ import {
     UpdateUserProfileBody,
     UsersRequestParams
 } from "../types/users/users-request.type.js";
-import {Post} from "../db/models/post.model.js";
 import postService from "../services/post.service.js";
 import {UploadedFile} from "express-fileupload";
 import imageService from "../services/image.service.js";
+import {
+    GetPostsByUserResponse,
+    GetUserprofileResponse,
+    GetUsersResponse,
+    UpdateUserProfileResponse
+} from "../types/users/users-response.type.js";
 
 class UserController {
-    async getAllUsers(req: Request, res: Response, next: NextFunction): Promise<Response<User[]> | void> {
+    async getAllUsers(
+        req: Request,
+        res: Response<GetUsersResponse>,
+        next: NextFunction
+    ): Promise<Response | void> {
         try {
             const users = await userService.getAllUsers();
             return res.status(200).json(users);
@@ -21,7 +29,11 @@ class UserController {
         }
     }
 
-    async getUserProfile(req: Request<UsersRequestParams>, res: Response, next: NextFunction): Promise<Response<User> | void> {
+    async getUserProfile(
+        req: Request<UsersRequestParams>,
+        res: Response<GetUserprofileResponse>,
+        next: NextFunction
+    ): Promise<Response | void> {
         try {
             const userId = +req.params.userId;
             const userProfile = await userService.getUserProfile(userId);
@@ -31,20 +43,30 @@ class UserController {
         }
     }
 
-    async getPostsByUser(req: Request<UsersRequestParams, {}, {}, PostsByUserRequestQuery>, res: Response, next: NextFunction): Promise<Response<Post> | void> {
+    async getPostsByUser(
+        req: Request<UsersRequestParams, {}, {}, PostsByUserRequestQuery>,
+        res: Response<GetPostsByUserResponse>,
+        next: NextFunction
+    ): Promise<Response | void> {
         try {
             const userId = +req.params.userId;
             const page = +req.query.page || 1;
             const limit = +req.query.limit || 10;
             const sortByQuery = req.query.sort_by;
-            const posts = await postService.getAllPosts({page, limit, sortByQuery, tagsQuery: '', userId});
+            const posts = await postService.getAllPosts({
+                page, limit, sortByQuery, tagsQuery: '', userId
+            });
             return res.status(200).json(posts);
         } catch (e) {
             next(e);
         }
     }
 
-    async updateUserProfile(req: Request<{}, {}, UpdateUserProfileBody>, res: Response, next: NextFunction): Promise<Response<User> | void> {
+    async updateUserProfile(
+        req: Request<{}, {}, UpdateUserProfileBody>,
+        res: Response<UpdateUserProfileResponse>,
+        next: NextFunction
+    ): Promise<Response | void> {
         try {
             const userId = req.user.id;
             const {name} = req.body;
@@ -63,7 +85,11 @@ class UserController {
         }
     }
 
-    async deleteUser(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    async deleteUser(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<Response | void> {
         try {
             const userId = req.user.id;
             await userService.deleteUserById(userId);
