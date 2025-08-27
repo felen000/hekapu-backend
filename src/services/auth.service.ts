@@ -4,6 +4,7 @@ import {v4} from "uuid";
 import UserDto from "../dtos/user/user.dto.js";
 import tokenService from "./token.service.js";
 import userService from "./user.service.js";
+import mailService from "./mail.service.js";
 
 class AuthService {
     async register(email: string, password: string) {
@@ -16,7 +17,7 @@ class AuthService {
         const username = email.split("@")[0];
         const user = await userService.createUser({email: email, password: hash, name: username, activationLink: link});
 
-        // await mailService.sendActivationMail(email, link);
+        await mailService.sendActivationMail(email, link);
         const userDto = new UserDto(user);
         const tokens = tokenService.generateTokens({userId: user.id, isActivated: user.isActivated});
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
