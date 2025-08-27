@@ -30,13 +30,11 @@ class TagService {
         return await tagRepository.createTag(tagName.toLowerCase());
     }
 
-    async deleteTag(tagName: string): Promise<boolean> {
-        const tag = await Tag.findOne({where: {name: tagName}});
-        if(!tag) {
+    async deleteTag(tagName: string): Promise<void> {
+        const deleted = await tagRepository.deleteTag(tagName);
+        if (deleted === 0) {
             throw ApiError.NotFoundError('Указанный тег не существует.');
         }
-        const deletedRows = await tagRepository.deleteTag(tagName);
-        return deletedRows > 0;
     }
 }
 

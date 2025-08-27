@@ -9,7 +9,7 @@ import {
     GetRepliesParams, GetRepliesQueryOptions
 } from "../types/comments/comments-request.type.js";
 import {
-    CreatedComment, DeleteCommentResponsePayload,
+    CreatedComment,
     GetAllCommentsResponsePayload,
     GetCommentResponsePayload, GetRepliesResponsePayload
 } from "../types/comments/comments-response.type.js";
@@ -85,12 +85,12 @@ class CommentController {
         }
     }
 
-    async deleteComment(req: Request<DeleteCommentParams>, res: Response<DeleteCommentResponsePayload>, next: NextFunction): Promise<Response<DeleteCommentResponsePayload> | void> {
+    async deleteComment(req: Request<DeleteCommentParams>, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const commentId = +req.params.commentId;
             const userId = req.user.id;
-            const isDeleted = await commentService.deleteComment(commentId, userId);
-            return res.status(200).json({isDeleted});
+            await commentService.deleteComment(commentId, userId);
+            return res.status(204).send();
         } catch (e) {
             next(e);
         }

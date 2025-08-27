@@ -30,7 +30,9 @@ class RatingService {
     async deleteRating(userId: number, postId: number): Promise<void> {
         return await sequelize.transaction(async (t: Transaction) => {
             const rating = await ratingRepository.findRating(postId, userId);
-            if (!rating) return;
+            if (!rating) {
+                throw ApiError.NotFoundError('Оценка не найдена.');
+            }
 
             await ratingRepository.deleteRating(postId, userId, t);
             await postRepository.incrementRating(postId, -rating.rate, t);

@@ -38,13 +38,12 @@ class UserService {
         return new UserDto(updatedUser);
     }
 
-    async deleteUserById(id: number): Promise<boolean> {
+    async deleteUserById(id: number): Promise<void> {
         const user = await userRepository.findUserById(id);
         if (!user) {
             throw ApiError.NotFoundError('Указанный пользователь не существует.');
         }
-        const deletedRowsCount = await userRepository.deleteUserById(id);
-        return deletedRowsCount > 0;
+        await userRepository.deleteUserById(id);
     }
 
     async getUserProfile(userId: number): Promise<UserDto> {

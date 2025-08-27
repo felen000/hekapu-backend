@@ -10,7 +10,7 @@ import {
     UpdatePostBody,
     UpdatePostParams
 } from "../types/posts/posts-request.types.js";
-import {CreatedPost, DeletePostResult, GetPostsResponse, UpdatedPost,} from "../types/posts/posts-response.types.js";
+import {CreatedPost, GetPostsResponse, UpdatedPost,} from "../types/posts/posts-response.types.js";
 import {Post} from "../db/models/post.model.js";
 import ImageService from "../services/image.service.js";
 
@@ -72,13 +72,13 @@ class PostController {
     }
 
     async deletePost(req: Request<DeletePostParams>,
-                     res: Response<DeletePostResult>,
-                     next: NextFunction): Promise<Response<DeletePostResult> | void> {
+                     res: Response,
+                     next: NextFunction): Promise<Response | void> {
         try {
             const postId = +req.params.postId;
             const userId = req.user?.id;
-            const isDeleted = await postService.deletePostById(postId, userId);
-            return res.json({isDeleted});
+            await postService.deletePostById(postId, userId);
+            return res.status(204).send();
         } catch (e) {
             next(e);
         }

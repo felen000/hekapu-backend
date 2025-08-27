@@ -63,13 +63,11 @@ class UserController {
         }
     }
 
-    async deleteUser(req: Request, res: Response, next: NextFunction): Promise<Response<{
-        isDeleted: boolean
-    }> | void> {
+    async deleteUser(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const userId = req.user.id;
-            const isDeleted = await userService.deleteUserById(userId);
-            return res.status(200).json({isDeleted});
+            await userService.deleteUserById(userId);
+            return res.status(204).send();
         } catch (e) {
             next(e);
         }

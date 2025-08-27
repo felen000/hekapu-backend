@@ -15,8 +15,8 @@ class RatingRepository {
         return await Rating.findOne({where: {postId, userId}, transaction});
     }
 
-    async deleteRating(postId: number, userId: number, transaction?: Transaction): Promise<void> {
-        await Rating.destroy({where: {postId, userId}, transaction});
+    async deleteRating(postId: number, userId: number, transaction?: Transaction): Promise<number> {
+        return await Rating.destroy({where: {postId, userId}, transaction});
     };
 }
 

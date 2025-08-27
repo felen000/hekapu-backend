@@ -2,7 +2,6 @@ import {Request, Response, NextFunction} from "express";
 import tagService from "../services/tag.service.js";
 import {Tag} from "../db/models/tag.js";
 import {CreateTagBody, SearchTagQuery} from "../types/tags/tags-request.type.js";
-import {DeleteTagResponse} from "../types/tags/tags-response.type.js";
 
 class TagController {
     async getTagsByQuery(
@@ -30,12 +29,12 @@ class TagController {
 
     async deleteTag(
         req: Request<{ tagName: string }>,
-        res: Response<DeleteTagResponse>,
-        next: NextFunction): Promise<Response<DeleteTagResponse> | void> {
+        res: Response,
+        next: NextFunction): Promise<Response | void> {
         try {
             const {tagName} = req.params;
-            const isDeleted = await tagService.deleteTag(tagName)
-            return res.status(200).json({isDeleted})
+            await tagService.deleteTag(tagName);
+            return res.status(204).send();
         } catch (e) {
             next(e);
         }
@@ -43,4 +42,4 @@ class TagController {
     };
 }
 
-export default new TagController()
+export default new TagController();

@@ -49,7 +49,7 @@ class PostService {
         });
     }
 
-    async deletePostById(postId: number, userId: number): Promise<boolean> {
+    async deletePostById(postId: number, userId: number): Promise<void> {
         const post = await postRepository.findPostById(postId);
 
         if (!post) {
@@ -60,8 +60,8 @@ class PostService {
             throw ApiError.ForbiddenError('Вы не можете удалить этот пост.');
         }
 
-        const deletedRowsCount = await postRepository.deletePostById(postId);
-        return deletedRowsCount > 0;
+        await postRepository.deletePostById(postId);
+
     }
 
     async getPostById(postId: number): Promise<Post> {

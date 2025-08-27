@@ -64,7 +64,7 @@ class CommentService {
         return await commentRepository.findReplies(postId, offset, limit);
     }
 
-    async deleteComment(commentId: number, userId: number): Promise<boolean> {
+    async deleteComment(commentId: number, userId: number): Promise<void> {
         const comment = await commentRepository.findCommentById(commentId);
         if (!comment) {
             throw ApiError.NotFoundError('Указанный комментарий не найден.');
@@ -72,8 +72,7 @@ class CommentService {
         if (comment.userId !== userId) {
             throw ApiError.ForbiddenError('Вы не можете удалить этот комментарий.');
         }
-        const deletedRowsCount = await commentRepository.deleteComment(commentId);
-        return deletedRowsCount > 0;
+        await commentRepository.deleteComment(commentId);
     }
 
 }

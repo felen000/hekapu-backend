@@ -13,7 +13,3 @@ export interface GetRepliesResponsePayload {
     replies: Comment[];
     replyCount: number;
 }
-
-export interface DeleteCommentResponsePayload {
-    isDeleted: boolean;
-}

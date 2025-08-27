@@ -22,14 +22,14 @@ class RatingController {
         }
     }
 
-    async deleteRating(req: Request<{ postId: string }>, res: Response, next: NextFunction): Promise<Response<{
-        isDeleted: boolean
-    }> | void> {
+    async deleteRating(req: Request<{
+        postId: string
+    }>, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const postId = +req.params.postId;
             const userId = req.user.id;
-            const isDeleted = await ratingService.deleteRating(userId, postId);
-            res.status(200).json({isDeleted});
+            await ratingService.deleteRating(userId, postId);
+            res.status(204).send();
         } catch (e) {
             next(e);
         }
