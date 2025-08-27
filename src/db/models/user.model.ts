@@ -8,7 +8,7 @@ import {
     AllowNull,
     Default,
     HasOne,
-    DefaultScope, DataType
+    DataType
 } from "sequelize-typescript";
 import {Role} from "./role.model.js";
 import {UserRole} from "./user.role.js";
@@ -67,16 +67,16 @@ export class User extends Model<User, UserCreationAttrs> {
 
     @BelongsToMany(() => User, {
         through: () => UserSubscription,
-        foreignKey: 'following_id',
-        otherKey: 'follower_id',
+        foreignKey: 'followingId',
+        otherKey: 'followerId',
         as: 'followers'
     })
     followers?: User[];
 
     @BelongsToMany(() => User, {
         through: () => UserSubscription,
-        foreignKey: 'follower_id',
-        otherKey: 'following_id',
+        foreignKey: 'followerId',
+        otherKey: 'followingId',
         as: 'following'
     })
     following?: User[];

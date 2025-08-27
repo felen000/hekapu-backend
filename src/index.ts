@@ -12,6 +12,7 @@ import userRouter from "./router/user.router.js";
 import tagRouter from "./router/tag.router.js";
 import commentRouter from "./router/comment.router.js";
 import ratingRouter from "./router/rating.router.js";
+import subscriptionRouter from "./router/subscription.router.js";
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -29,13 +30,13 @@ app.use('/users', userRouter);
 app.use('/tags', tagRouter);
 app.use(commentRouter);
 app.use(ratingRouter);
+app.use('/subscriptions', subscriptionRouter);
 app.use(errorMiddleware);
 
 (async () => {
     try {
         await sequelize.sync({force: false});
         // await Role.create({name: 'USER'});
-        // await Post.destroy({truncate: true, cascade: true});
         // for (let i = 0; i < 100; i++) {
         //     const post = await Post.create({title: 'Title'+i, userId:1, content:'fijiiiiiiiie', image: null})
         // }

@@ -71,6 +71,41 @@ class UserRepository {
         const findResult = await User.findAndCountAll({attributes: ['id', 'name', 'profilePicture']});
         return {userCount: findResult.count, users: findResult.rows};
     }
+
+    async getFollowers(userId: number): Promise<{ followers: User[], followerCount: number }> {
+        const {rows, count} = await User.findAndCountAll({
+            attributes: ['id', 'name', 'profilePicture'],
+            include: [
+                {
+                    attributes: [],
+                    association: 'following',
+                    where: {id: userId},
+                    through: {attributes: []},
+                    required: true
+                }
+            ]
+        });
+
+        return {followers: rows, followerCount: count};
+    }
+
+
+    async getFollowings(userId: number): Promise<{ followings: User[], followingCount: number }> {
+        const {rows, count} = await User.findAndCountAll({
+            attributes: ['id', 'name', 'profilePicture'],
+            include: [
+                {
+                    attributes: [],
+                    association: 'followers',
+                    where: {id: userId},
+                    through: {attributes: []},
+                    required: true
+                }
+            ]
+        });
+
+        return {followings: rows, followingCount: count};
+    }
 }
 
 export default new UserRepository();

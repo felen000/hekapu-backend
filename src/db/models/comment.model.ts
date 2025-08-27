@@ -42,7 +42,7 @@ export class Comment extends Model<Comment, CommentCreationAttrs> {
     content!: string;
 
     @ForeignKey(() => Comment)
-    @Column(DataType.NUMBER)
+    @Column(DataType.INTEGER)
     parentId?: number | null;
 
     @BelongsTo(() => Comment, 'parentId')
