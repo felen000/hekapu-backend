@@ -26,18 +26,15 @@ class TokenService {
     async saveToken(userId: number, refreshToken: string): Promise<Token> {
         const tokenFromDb = await tokenRepository.findTokenByUserId(userId);
         if (tokenFromDb) {
-            const updatedToken = await tokenRepository.updateToken({refreshToken, userId},);
-            return updatedToken;
+            return  await tokenRepository.updateToken({refreshToken, userId},);
         }
 
-        const newToken = await tokenRepository.createToken({refreshToken, userId});
-        return newToken;
+        return  await tokenRepository.createToken({refreshToken, userId});
     }
 
     validateRefreshToken(refreshToken: string): TokenPayload | null {
         try {
-            const userData = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!) as TokenPayload;
-            return userData;
+            return  jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!) as TokenPayload;
         } catch (e) {
             return null;
         }
@@ -45,8 +42,7 @@ class TokenService {
 
     validateAccessToken(refreshToken: string): TokenPayload | null {
         try {
-            const userData = jwt.verify(refreshToken, process.env.JWT_ACCESS_SECRET!) as TokenPayload;
-            return userData;
+            return  jwt.verify(refreshToken, process.env.JWT_ACCESS_SECRET!) as TokenPayload;
         } catch (e) {
             return null;
         }
