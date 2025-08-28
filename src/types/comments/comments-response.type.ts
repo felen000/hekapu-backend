@@ -1,15 +1,15 @@
-import {Comment} from "../../db/models/comment.model.js";
+import CommentDto from "../../dtos/comment/comment.dto.js";
 
-export interface CreatedComment extends Comment {}
+export interface CreatedComment extends CommentDto {}
 
-export interface GetCommentResponsePayload extends Comment {}
+export interface GetCommentResponsePayload extends CommentDto {}
 
 export interface GetAllCommentsResponsePayload {
-    comments: Comment[];
+    comments: CommentDto[];
     commentCount: number;
 }
 
 export interface GetRepliesResponsePayload {
-    replies: Comment[];
+    replies: CommentDto[];
     replyCount: number;
 }
