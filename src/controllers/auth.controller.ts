@@ -34,7 +34,7 @@ class AuthController {
         req: Request<{}, {}, LoginBody>,
         res: Response<AuthResult>,
         next: NextFunction
-    ): Promise<Response<AuthResult> | void> {
+    ): Promise<Response | void> {
         try {
             const result = validationResult(req);
             if (!result.isEmpty()) {
@@ -43,7 +43,7 @@ class AuthController {
             const {email, password} = req.body;
             const authData = await authService.login(email, password);
             res.cookie('refreshToken', authData.refreshToken, REFRESH_COOKIE_OPTIONS);
-            return res.json({accessToken: authData.accessToken, user: authData.user});
+            return res.status(200).json({accessToken: authData.accessToken, user: authData.user});
         } catch (e) {
             next(e);
         }
@@ -74,7 +74,7 @@ class AuthController {
         req: RefreshRequest,
         res: Response<AuthResult>,
         next: NextFunction
-    ): Promise<Response<AuthResult> | void> {
+    ): Promise<Response | void> {
         try {
             const {refreshToken} = req.cookies;
             const authData = await authService.refresh(refreshToken);
