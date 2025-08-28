@@ -1,15 +1,22 @@
 import {Request, Response, NextFunction} from "express";
 import subscriptionService from "../services/subscription.service.js";
-import {UserSubscription} from "../db/models/user-subscription.model.js";
 import {
     GetFollowersParams, GetFollowingsParams,
     SubscribeParams,
     UnsubscribeParams
 } from "../types/subscriptions/subscriptions-request.type.js";
-import {GetFollowersResponse, GetFollowingsResponse} from "../types/subscriptions/subscriptions-response.type.js";
+import {
+    GetFollowersResponse,
+    GetFollowingsResponse,
+    SubscribeResponse
+} from "../types/subscriptions/subscriptions-response.type.js";
 
 class SubscriptionController {
-    async subscribe(req: Request<SubscribeParams>, res: Response<UserSubscription>, next: NextFunction): Promise<Response<UserSubscription> | void> {
+    async subscribe(
+        req: Request<SubscribeParams>,
+        res: Response<SubscribeResponse>,
+        next: NextFunction
+    ): Promise<Response | void> {
         try {
             const currentUserId = req.user.id;
             const targetUserId = +req.params.userId;
@@ -20,7 +27,11 @@ class SubscriptionController {
         }
     }
 
-    async unsubscribe(req: Request<UnsubscribeParams>, res: Response, next: NextFunction): Promise<Response | void> {
+    async unsubscribe(
+        req: Request<UnsubscribeParams>,
+        res: Response,
+        next: NextFunction
+    ): Promise<Response | void> {
         try {
             const currentUserId = req.user.id;
             const targetUserId = +req.params.userId;
@@ -31,7 +42,11 @@ class SubscriptionController {
         }
     }
 
-    async getFollowers(req: Request<GetFollowersParams>, res: Response<GetFollowersResponse>, next: NextFunction): Promise<Response<GetFollowersResponse> | void> {
+    async getFollowers(
+        req: Request<GetFollowersParams>,
+        res: Response<GetFollowersResponse>,
+        next: NextFunction
+    ): Promise<Response | void> {
         try {
             const userId = +req.params.userId;
             const followers = await subscriptionService.getFollowers(userId);
@@ -41,7 +56,11 @@ class SubscriptionController {
         }
     }
 
-    async getFollowings(req: Request<GetFollowingsParams>, res: Response<GetFollowingsResponse>, next: NextFunction): Promise<Response<GetFollowingsResponse> | void> {
+    async getFollowings(
+        req: Request<GetFollowingsParams>,
+        res: Response<GetFollowingsResponse>,
+        next: NextFunction
+    ): Promise<Response | void> {
         try {
             const userId = +req.params.userId;
             const followings = await subscriptionService.getFollowings(userId);
