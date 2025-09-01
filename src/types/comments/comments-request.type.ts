@@ -1,5 +1,13 @@
 import {ParamsDictionary} from "express-serve-static-core";
 
+export interface CreateCommentParams extends ParamsDictionary{
+    postId: string
+}
+
+export interface GetCommentParams extends ParamsDictionary{
+    commentId: string
+}
+
 export interface CreateCommentBody {
     postId: number;
     content: string;

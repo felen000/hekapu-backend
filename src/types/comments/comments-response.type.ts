@@ -4,12 +4,12 @@ export interface CreatedComment extends CommentDto {}
 
 export interface GetCommentResponsePayload extends CommentDto {}
 
-export interface GetAllCommentsResponsePayload {
+export interface GetAllCommentsResponse {
     comments: CommentDto[];
     commentCount: number;
 }
 
-export interface GetRepliesResponsePayload {
+export interface GetRepliesResponse {
     replies: CommentDto[];
     replyCount: number;
 }

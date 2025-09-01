@@ -3,21 +3,25 @@ import commentService from "../services/comment.service.js";
 import {FieldValidationError, validationResult} from "express-validator";
 import {ApiError} from "../exceptions/api-error.js";
 import {
-    CreateCommentBody,
-    DeleteCommentParams, GetAllCommentsQueryOptions, GetCommentsByPostQueryOptions,
+    CreateCommentBody, CreateCommentParams,
+    DeleteCommentParams, GetAllCommentsQueryOptions, GetCommentParams, GetCommentsByPostQueryOptions,
     GetCommentsParams,
     GetRepliesParams, GetRepliesQueryOptions
 } from "../types/comments/comments-request.type.js";
 import {
     CreatedComment,
-    GetAllCommentsResponsePayload,
-    GetCommentResponsePayload, GetRepliesResponsePayload
+    GetAllCommentsResponse,
+    GetCommentResponsePayload, GetRepliesResponse
 } from "../types/comments/comments-response.type.js";
 
+
+
 class CommentController {
-    async createComment(req: Request<{
-        postId: string
-    }, {}, CreateCommentBody>, res: Response<CreatedComment>, next: NextFunction): Promise<Response<CreatedComment> | void> {
+    async createComment(
+        req: Request<CreateCommentParams, {}, CreateCommentBody>,
+        res: Response<CreatedComment>,
+        next: NextFunction
+    ): Promise<Response | void> {
         try {
             const result = validationResult(req);
             if (!result.isEmpty()) {
@@ -35,9 +39,9 @@ class CommentController {
     }
 
     async getCommentById(
-        req: Request<{ commentId: string }>,
+        req: Request<GetCommentParams>,
         res: Response<GetCommentResponsePayload>,
-        next: NextFunction): Promise<Response<GetCommentResponsePayload> | void> {
+        next: NextFunction): Promise<Response | void> {
         try {
             const commentId = +req.params.commentId;
             const comment = await commentService.getCommentById(commentId);
@@ -47,7 +51,11 @@ class CommentController {
         }
     }
 
-    async getAllComments(req: Request<{}, {}, {}, GetAllCommentsQueryOptions>, res: Response<GetAllCommentsResponsePayload>, next: NextFunction): Promise<Response<GetAllCommentsResponsePayload> | void> {
+    async getAllComments(
+        req: Request<{}, {}, {}, GetAllCommentsQueryOptions>,
+        res: Response<GetAllCommentsResponse>,
+        next: NextFunction
+    ): Promise<Response | void> {
         try {
             const page = +req.query.page || 1;
             const limit = +req.query.limit || 10;
@@ -61,7 +69,11 @@ class CommentController {
         }
     }
 
-    async getCommentsByPost(req: Request<GetCommentsParams, {}, {}, GetCommentsByPostQueryOptions>, res: Response<GetAllCommentsResponsePayload>, next: NextFunction): Promise<Response<GetAllCommentsResponsePayload> | void> {
+    async getCommentsByPost(
+        req: Request<GetCommentsParams, {}, {}, GetCommentsByPostQueryOptions>,
+        res: Response<GetAllCommentsResponse>,
+        next: NextFunction
+    ): Promise<Response | void> {
         try {
             const postId = +req.params.postId;
             const page = +req.query.page || 1;
@@ -73,7 +85,11 @@ class CommentController {
         }
     }
 
-    async getReplies(req: Request<GetRepliesParams, {}, {}, GetRepliesQueryOptions>, res: Response<GetRepliesResponsePayload>, next: NextFunction): Promise<Response<GetRepliesResponsePayload> | void> {
+    async getReplies(
+        req: Request<GetRepliesParams, {}, {}, GetRepliesQueryOptions>,
+        res: Response<GetRepliesResponse>,
+        next: NextFunction
+    ): Promise<Response | void> {
         try {
             const parentId = +req.params.commentId;
             const page = +req.query.page || 1;
@@ -85,7 +101,11 @@ class CommentController {
         }
     }
 
-    async deleteComment(req: Request<DeleteCommentParams>, res: Response, next: NextFunction): Promise<Response | void> {
+    async deleteComment(
+        req: Request<DeleteCommentParams>,
+        res: Response,
+        next: NextFunction
+    ): Promise<Response | void> {
         try {
             const commentId = +req.params.commentId;
             const userId = req.user.id;
