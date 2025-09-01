@@ -1,9 +1,9 @@
 import {NextFunction, Request, Response} from "express";
 import userService from "../services/user.service.js";
 import {
-    PostsByUserRequestQuery,
+    GetPostsByUserQuery,
     UpdateUserProfileBody,
-    UsersRequestParams
+    GetUserprofileParams, GetPostsByUserParams
 } from "../types/users/users-request.type.js";
 import postService from "../services/post.service.js";
 import {UploadedFile} from "express-fileupload";
@@ -30,7 +30,7 @@ class UserController {
     }
 
     async getUserProfile(
-        req: Request<UsersRequestParams>,
+        req: Request<GetUserprofileParams>,
         res: Response<GetUserprofileResponse>,
         next: NextFunction
     ): Promise<Response | void> {
@@ -44,7 +44,7 @@ class UserController {
     }
 
     async getPostsByUser(
-        req: Request<UsersRequestParams, {}, {}, PostsByUserRequestQuery>,
+        req: Request<GetPostsByUserParams, {}, {}, GetPostsByUserQuery>,
         res: Response<GetPostsByUserResponse>,
         next: NextFunction
     ): Promise<Response | void> {
