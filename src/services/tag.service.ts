@@ -2,14 +2,16 @@ import {Tag} from "../db/models/tag.js";
 import tagRepository from "../repository/tag.repository.js";
 import {Transaction} from "sequelize";
 import {ApiError} from "../exceptions/api-error.js";
+import TagDto from "../dtos/tag/tag.dto.js";
 
 class TagService {
     async getAllTags(): Promise<Tag[]> {
         return await tagRepository.findAll();
     }
 
-    async getTagsIncludingQuery(tagQuery: string): Promise<Tag[]> {
-        return await tagRepository.findTagsIncludingQuery(tagQuery);
+    async getTagsIncludingQuery(tagQuery: string): Promise<TagDto[]> {
+        const tags = await tagRepository.findTagsIncludingQuery(tagQuery);
+        return tags.map(tag => new TagDto(tag));
     }
 
     async getOrCreateTags(tagNames: string[], transaction?: Transaction): Promise<Tag[]> {
@@ -26,8 +28,8 @@ class TagService {
     }
 
 
-    async createTag(tagName: string): Promise<Tag> {
-        return await tagRepository.createTag(tagName.toLowerCase());
+    async createTag(tagName: string): Promise<TagDto> {
+        return new TagDto(await tagRepository.createTag(tagName.toLowerCase()));
     }
 
     async deleteTag(tagName: string): Promise<void> {

@@ -1,9 +1,7 @@
-import {Tag} from "../../db/models/tag.js";
+import TagDto from "../../dtos/tag/tag.dto.js";
 
-export interface CreateTagResponse {
-    name: string;
-}
+export interface CreateTagResponse extends TagDto {}
 
 export interface GetTagsResponse {
-    tags: Tag[];
+    tags: TagDto[];
 }
