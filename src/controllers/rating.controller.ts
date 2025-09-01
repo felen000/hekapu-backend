@@ -2,11 +2,15 @@ import {Request, Response, NextFunction} from "express";
 import ratingService from "../services/rating.service.js";
 import {FieldValidationError, validationResult} from "express-validator";
 import {ApiError} from "../exceptions/api-error.js";
+import {DeleteRatingParams, RatePostBody, RatePostParams} from "../types/ratings/ratings-request.type.js";
+import {RatePostResponse} from "../types/ratings/ratings-response.type.js";
 
 class RatingController {
-    async ratePost(req: Request<{ postId: string }, {}, {
-        rating: number
-    }>, res: Response, next: NextFunction): Promise<Response | void> {
+    async ratePost(
+        req: Request<RatePostParams, {}, RatePostBody>,
+        res: Response<RatePostResponse>,
+        next: NextFunction
+    ): Promise<Response | void> {
         try {
             const result = validationResult(req);
             if (!result.isEmpty()) {
@@ -22,9 +26,11 @@ class RatingController {
         }
     }
 
-    async deleteRating(req: Request<{
-        postId: string
-    }>, res: Response, next: NextFunction): Promise<Response | void> {
+    async deleteRating(
+        req: Request<DeleteRatingParams>,
+        res: Response,
+        next: NextFunction
+    ): Promise<Response | void> {
         try {
             const postId = +req.params.postId;
             const userId = req.user.id;
