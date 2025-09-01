@@ -2,12 +2,11 @@ import postRepository from "../repository/post.repository.js";
 import {ApiError} from "../exceptions/api-error.js";
 import ratingRepository from "../repository/rating.repository.js";
 import {Rating} from "../db/models/rating.model.js";
-import {sequelize} from "../db/index.js";
-import {Transaction} from "sequelize";
+import {createTransaction} from "../helpers/create-transaction.js";
 
 class RatingService {
     async ratePost(userId: number, postId: number, rate: number): Promise<Rating> {
-        return await sequelize.transaction(async (t: Transaction) => {
+        return await createTransaction(async (t) => {
             const post = await postRepository.findPostById(postId);
             if (!post) {
                 throw ApiError.NotFoundError('Указанный пост не найден.');
@@ -28,7 +27,7 @@ class RatingService {
     }
 
     async deleteRating(userId: number, postId: number): Promise<void> {
-        return await sequelize.transaction(async (t: Transaction) => {
+        return await createTransaction(async (t) => {
             const rating = await ratingRepository.findRating(postId, userId);
             if (!rating) {
                 throw ApiError.NotFoundError('Оценка не найдена.');

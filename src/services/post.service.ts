@@ -2,17 +2,16 @@ import {Post, PostCreateAttrs, PostUpdateAttrs} from "../db/models/post.model.js
 import {ApiError} from "../exceptions/api-error.js";
 import postRepository from "../repository/post.repository.js";
 import tagService from "./tag.service.js";
-import {sequelize} from "../db/index.js";
-import {Transaction} from "sequelize";
 import getOrderOptions from "../helpers/get-order-options.js";
 import getOffset from "../helpers/get-offset.js";
+import {createTransaction} from "../helpers/create-transaction.js";
 
 class PostService {
     async createPost(postData: PostCreateAttrs, tagNames: string[]): Promise<Post> {
         if (!postData.image && !postData.content) {
             throw ApiError.BadRequestError('Пост не может состоять из одного заголовка.');
         }
-        return await sequelize.transaction(async (t: Transaction) => {
+        return await createTransaction(async (t) => {
             const post = await postRepository.createPost(postData, t);
             if (tagNames.length > 0) {
                 const tags = await tagService.getOrCreateTags(tagNames, t);
@@ -39,7 +38,7 @@ class PostService {
         if (postData.content) valuesToUpdate.content = postData.content;
         if (postData.image) valuesToUpdate.image = postData.image;
 
-        return await sequelize.transaction(async (t: Transaction) => {
+        return await createTransaction(async (t) => {
             const post = await postRepository.updatePostById(postId, valuesToUpdate, t);
             if (tagNames.length > 0) {
                 const tags = await tagService.getOrCreateTags(tagNames, t);
