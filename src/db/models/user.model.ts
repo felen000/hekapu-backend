@@ -62,8 +62,8 @@ export class User extends Model<User, UserCreationAttrs> {
     @HasMany(() => Comment)
     comments?: Comment[];
 
-    @HasOne(()=>Token)
-    token?: Token;
+    @HasOne(() => Token)
+    token?: Awaited<Token>;
 
     @BelongsToMany(() => User, {
         through: () => UserSubscription,

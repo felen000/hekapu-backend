@@ -49,7 +49,7 @@ export class Post extends Model<Post, PostCreateAttrs> {
     userId!: number;
 
     @BelongsTo(() => User)
-    user!: User;
+    user!: Awaited<User>;
 
     @BelongsToMany(() => Tag, {
         through: () => PostTag,

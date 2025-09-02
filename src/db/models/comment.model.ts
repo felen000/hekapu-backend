@@ -27,7 +27,7 @@ export class Comment extends Model<Comment, CommentCreationAttrs> {
     postId!: number;
 
     @BelongsTo(() => Post)
-    post?: Post;
+    post?: Awaited<Post>;
 
     @AllowNull(false)
     @ForeignKey(() => User)
@@ -35,7 +35,7 @@ export class Comment extends Model<Comment, CommentCreationAttrs> {
     userId!: number;
 
     @BelongsTo(() => User)
-    user?: User;
+    user?: Awaited<User>;
 
     @AllowNull(false)
     @Column
